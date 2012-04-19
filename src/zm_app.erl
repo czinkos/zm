@@ -5,16 +5,12 @@
 -export([start/2, stop/1]).
 
 start(_StartType, _StartArgs)->
-  SchemaResult = mnesia:create_schema([node()]),
   CreateTable = zm_sub_mon:create_table(),
-  start_server(SchemaResult, CreateTable).
+  start_server(CreateTable).
 
-% first time run
-start_server(ok, ok) ->
+start_server(ok) ->
   start_server();
-start_server({error,{_,{already_exists,_}}}, ok) ->
-  start_server();
-start_server(_, M) ->
+start_server(M) ->
   {error, M}.
 
 start_server() ->

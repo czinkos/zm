@@ -2,14 +2,15 @@ ERLC=erlc
 SRCDIR=src
 BEAMDIR=ebin
 INCDIR=inc
+REBAR=./rebar
 
-all: compile 
+all: clean compile doc
 
-compile:
-	@ mkdir -p $(BEAMDIR) ;
-	@ $(ERLC) -I $(INCDIR) -o $(BEAMDIR) $(SRCDIR)/*.erl ;
+compile: 
+	@ $(REBAR) compile ;
 
 clean: 
-	@ rm -rf $(BEAMDIR)/*.beam ;
-	@ rm -f erl_crush.dump
+	@ $(REBAR) clean ;
 
+doc: 
+	@ $(REBAR) doc ;

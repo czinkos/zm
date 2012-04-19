@@ -11,7 +11,6 @@ list_channels/0
 
 -export([init/1]).
 
-
 start_link() ->
   start_link([]).
 start_link(Options) ->

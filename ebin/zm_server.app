@@ -6,8 +6,9 @@
             zm_app,
             zm_sup,
             zm_channel_sup,
-            zm_filter_channel,
-            zm_channel
+            zm_channel,
+            zm_ch_base,
+            zm_sub_mon
           ]},
 {registered, [zm_sup, zm_channel_sup]},
 {applications, [kernel,stdlib,sasl,mnesia]},

@@ -61,7 +61,11 @@ handle_info(stop, State) ->
   {stop, normal, State};
 
 handle_info({From, ping}, State) ->
-  From ! pong,
+  From ! {self(), pong},
+  {noreply, State};
+
+handle_info(crash, State) ->
+  P = 1 / 0, % crash this process
   {noreply, State};
 
 handle_info(_Info, State) ->
