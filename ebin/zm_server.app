@@ -8,6 +8,7 @@
             zm_channel_sup,
             zm_channel,
             zm_ch_base,
+            zm_ch_delayed,
             zm_sub_mon
           ]},
 {registered, [zm_sup, zm_channel_sup]},
