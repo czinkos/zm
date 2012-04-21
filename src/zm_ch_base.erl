@@ -9,7 +9,6 @@
 
 -record(state, { id }).
 
-
 start_link(ChannelId, Options) ->
     gen_server:start_link({local, ChannelId}, ?MODULE, [ChannelId] ++ Options, []).
 
@@ -21,8 +20,7 @@ init([ChannelId | _Options]) ->
 
 handle_cast({msg, Msg}, S) ->
   ChannelId = S#state.id,
-  Send = 
-  fun
+  Send = fun
     ({SubPid, SubscriptionRef, []}, {Sent, Filtered, Error}) ->
       SubPid ! {msg, {ChannelId, SubscriptionRef}, Msg},
       {Sent + 1, Filtered, Error};

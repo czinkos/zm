@@ -1,7 +1,6 @@
 -module(zm_sub_mon).
 -vsn("1.0").
 -author("czinkos@gmail.com").
-
 -behaviour(gen_server).
 
 -include_lib("stdlib/include/qlc.hrl").
@@ -14,7 +13,6 @@
 
 start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
-
 
 init([]) ->
   gen_event:notify(zm_em_sys, {"INFO", ?MODULE, "init started"}),
@@ -35,14 +33,11 @@ init([]) ->
     end
   ), 
   gen_event:notify(zm_em_sys, {"INFO", ?MODULE, "init finished"}),
-
   {ok, State}.
-
 
 %%%%%%%%%%%%%%%%
 %% API functions
 %%%%%%%%%%%%%%%%
-
 create_table() ->
   mnesia:delete_table(zm_channel_sub),
   case mnesia:create_table(zm_channel_sub, [{type, set}, {index, [#zm_channel_sub.sub, #zm_channel_sub.channel]}, {disc_copies, [node()]}, {attributes, record_info(fields, zm_channel_sub)}]) of
@@ -50,7 +45,6 @@ create_table() ->
     {aborted,{already_exists,zm_channel_sub}} -> ok;
     M -> {error, M}
   end.
-
 
 register(Channel, Pid, Options) ->
   gen_server:call(?MODULE, {register, Channel, Pid, Options}).
@@ -65,10 +59,7 @@ fold_subs(Channel, Acc0, Fun) ->
   QH = qlc:q([ { Pid, SubscriptionRef, Options} || #zm_channel_sub{ channel = Ch, sub=Pid, id=SubscriptionRef,  options=Options } <- ets:table(zm_channel_sub), Ch == Channel ]),
   qlc:fold(Fun, Acc0, QH).
 
-
 %% internal functions
-
-
 do_register(State, Channel, Pid, Options) ->
   SubscriptionRef = erlang:make_ref(),
   mnesia:dirty_write(#zm_channel_sub{ id=SubscriptionRef, channel = Channel, sub=Pid, options=Options}),
@@ -81,9 +72,7 @@ do_register(State, Channel, Pid, Options) ->
     [{P, _M, _Counter}] ->
       ets:update_counter(State, P, [{3, 1}])
   end,
-
   SubscriptionRef.
- 
 
 do_deregister(_State, [], _) ->
   do_nothing;
@@ -111,8 +100,8 @@ delete_and_notify(#zm_channel_sub{id = SubscriptionRef, channel = Channel, sub=P
 delete_and_notify(#zm_channel_sub{id = SubscriptionRef, channel = Channel, sub=Pid, options=Options}, Reason) ->
   mnesia:dirty_delete(zm_channel_sub, SubscriptionRef),
   Channel ! {Reason, SubscriptionRef, Pid, Options}. 
-%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%
 handle_call({register, Channel, Pid, Options}, _From, State) ->
   SubscriptionRef = do_register(State, Channel, Pid, Options),
   {reply, SubscriptionRef, State};
