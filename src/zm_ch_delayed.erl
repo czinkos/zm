@@ -51,6 +51,10 @@ handle_info({subscriber_died, _SubscriptionRef, _SubPid, _Options}, State) ->
 handle_info(stop, State) ->
   {stop, normal, State};
 
+handle_info(crash, State) ->
+  io:format("Won't crash.\n"),
+  {noreply, State};
+
 handle_info({From, ping}, State) ->
   From ! pong,
   {noreply, State};
@@ -58,7 +62,8 @@ handle_info({From, ping}, State) ->
 handle_info(_Info, State) ->
   {noreply, State}.
 
-terminate(_Reason, _S) ->
+terminate(Reason, _S) ->
+  io:format("<<<<<<<<<<< Channel terminated. Reason: ~p >>>>>>>>>>>>\n", [Reason]),
   terminate.
 
 code_change(_OldVsn, State, _Extra) ->

@@ -20,7 +20,7 @@
 do_start(ChannelModule, ChannelId, Options) ->
   case zm_channel_sup:start_channel(?CHILD_SPEC(ChannelModule, ChannelId, Options)) of
     {ok, _Pid} ->
-      gen_event:notify(zm_em_sys, {"INFO", ?MODULE, "channel '" ++ erlang:atom_to_list(ChannelId) ++ "' starting" }),
+      gen_event:notify(zm_em_sys, {"INFO", ?MODULE, "channel '" ++ erlang:atom_to_list(ChannelId) ++ "' started" }),
       {ok, started};
     R ->
       {error, cannotstart, R}
